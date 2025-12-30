@@ -22,7 +22,6 @@ err() {
   echo "error: ${BASH_SOURCE[1]}:${BASH_LINENO[0]}: $BASH_COMMAND" >&2
   exit 1
 }
-
 trap err ERR
 
 hello() {
@@ -31,10 +30,11 @@ hello() {
   echo "Hello $target"
 }
 
-echo "🚀START: $0"
-
+START_TIME=$(docker run --rm -it ghcr.io/sunakan/ztime:v0.0.1 --tokyo)
+echo "🚀START:    $0 $* ${START_TIME}"
 (($# == 1)) || (echo '引数は1つだけ必要です' >&2 && usage)
 
 hello "$1"
 
-echo "✅FINISHED: $0"
+FINISHED_TIME=$(docker run --rm -it ghcr.io/sunakan/ztime:v0.0.1 --tokyo)
+echo "✅FINISHED: $0 $* ${FINISHED_TIME}"
