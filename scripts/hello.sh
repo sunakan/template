@@ -7,6 +7,8 @@ set -Eeuo pipefail
 # -x: スクリプトの実行内容を表示(debugで利用)
 # -o pipefail: パイプライン内のエラーを検出
 
+source "$(dirname "$0")/util.sh"
+
 usage() {
   echo "$0" >&2
   echo '概要:' >&2
@@ -18,23 +20,16 @@ usage() {
   exit 2
 }
 
-err() {
-  echo "error: ${BASH_SOURCE[1]}:${BASH_LINENO[0]}: $BASH_COMMAND" >&2
-  exit 1
-}
-trap err ERR
-
 hello() {
   local target
   readonly target="$1"
-  echo "Hello $target"
+  log_info "Hello $target"
 }
 
-START_TIME=$(docker run --rm -it ghcr.io/sunakan/ztime:v0.0.1 --tokyo)
-echo "🚀START:    $0 $* ${START_TIME}"
+start_timer
 (($# == 1)) || (echo '引数は1つだけ必要です' >&2 && usage)
 
 hello "$1"
+sleep 1
 
-FINISHED_TIME=$(docker run --rm -it ghcr.io/sunakan/ztime:v0.0.1 --tokyo)
-echo "✅FINISHED: $0 $* ${FINISHED_TIME}"
+end_timer
